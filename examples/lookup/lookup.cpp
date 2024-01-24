@@ -25,7 +25,7 @@ int main(int argc, char ** argv){
 #ifndef LOG_DISABLE_LOGS
     log_set_target(log_filename_generator("lookup", "log"));
     LOG_TEE("Log start\n");
-    log_dump_cmdline(argc, argv);
+    //log_dump_cmdline(argc, argv);
 #endif // LOG_DISABLE_LOGS
 
     // init llama.cpp

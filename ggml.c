@@ -198,13 +198,16 @@ inline static void * ggml_aligned_malloc(size_t size) {
         GGML_PRINT("WARNING: Behavior may be unexpected when allocating 0 bytes for ggml_aligned_malloc!\n");
         return NULL;
     }
-    void * aligned_memory = NULL;
+    //void * aligned_memory = NULL;
 #ifdef GGML_USE_CPU_HBM
     int result = hbw_posix_memalign(&aligned_memory, 16, size);
 #elif GGML_USE_METAL
     int result = posix_memalign(&aligned_memory, sysconf(_SC_PAGESIZE), size);
 #else
-    int result = posix_memalign(&aligned_memory, GGML_MEM_ALIGN, size);
+    void * aligned_memory = malloc(size);
+    int result = 0;
+    //int result = (&aligned_memory, GGML_MEM_ALIGN, size);
+    //int result = posix_memalign(&aligned_memory, GGML_MEM_ALIGN, size);
 #endif
     if (result != 0) {
         // Handle allocation failure
@@ -341,16 +344,38 @@ int64_t ggml_time_us(void) {
     return ((t.QuadPart-timer_start) * 1000000) / timer_freq;
 }
 #else
+
+#include <time.h>
+#include <sys/time.h>
+#include <mach/clock.h>
+#include <mach/mach.h>
+
 void ggml_time_init(void) {}
 int64_t ggml_time_ms(void) {
     struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
+
+    clock_serv_t cclock;
+    mach_timespec_t mts;
+    host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+    clock_get_time(cclock, &mts);
+    mach_port_deallocate(mach_task_self(), cclock);
+    ts.tv_sec = mts.tv_sec;
+    ts.tv_nsec = mts.tv_nsec; 
+
     return (int64_t)ts.tv_sec*1000 + (int64_t)ts.tv_nsec/1000000;
 }
 
 int64_t ggml_time_us(void) {
     struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
+
+    clock_serv_t cclock;
+    mach_timespec_t mts;
+    host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+    clock_get_time(cclock, &mts);
+    mach_port_deallocate(mach_task_self(), cclock);
+    ts.tv_sec = mts.tv_sec;
+    ts.tv_nsec = mts.tv_nsec;
+
     return (int64_t)ts.tv_sec*1000000 + (int64_t)ts.tv_nsec/1000;
 }
 #endif

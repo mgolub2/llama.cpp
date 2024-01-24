@@ -567,7 +567,7 @@ inline void log_print_usage()
                                    "Each log file will have unique name: \"<name>.<ID>.log\"\n");
     printf("  --log-append          Don't truncate the old log file.\n");
 }
-
+/*
 #define log_dump_cmdline(argc, argv) log_dump_cmdline_impl(argc, argv)
 
 // INTERNAL, DO NOT USE
@@ -587,7 +587,7 @@ inline void log_dump_cmdline_impl(int argc, char **argv)
     }
     LOGLN("Cmd:%s", buf.str().c_str());
 }
-
+*/
 #define log_tostr(var) log_var_to_string_impl(var).c_str()
 
 inline std::string log_var_to_string_impl(bool var)

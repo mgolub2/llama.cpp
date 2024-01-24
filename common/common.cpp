@@ -17,10 +17,10 @@
 #include <vector>
 #include <cinttypes>
 
-#if defined(__APPLE__) && defined(__MACH__)
-#include <sys/types.h>
-#include <sys/sysctl.h>
-#endif
+//#if defined(__APPLE__) && defined(__MACH__)
+//#include <sys/types.h>
+//#include <sys/sysctl.h>
+//#endif
 
 #if defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN
@@ -61,16 +61,16 @@ int32_t get_num_physical_cores() {
         return static_cast<int32_t>(siblings.size());
     }
 #elif defined(__APPLE__) && defined(__MACH__)
-    int32_t num_physical_cores;
-    size_t len = sizeof(num_physical_cores);
-    int result = sysctlbyname("hw.perflevel0.physicalcpu", &num_physical_cores, &len, NULL, 0);
-    if (result == 0) {
-        return num_physical_cores;
-    }
-    result = sysctlbyname("hw.physicalcpu", &num_physical_cores, &len, NULL, 0);
-    if (result == 0) {
-        return num_physical_cores;
-    }
+    //int32_t num_physical_cores;
+    //size_t len = sizeof(num_physical_cores);
+    //int result = sysctlbyname("hw.perflevel0.physicalcpu", &num_physical_cores, &len, NULL, 0);
+    //if (result == 0) {
+    //    return num_physical_cores;
+    //}
+    //result = sysctlbyname("hw.physicalcpu", &num_physical_cores, &len, NULL, 0);
+    //if (result == 0) {
+    //    return num_physical_cores;
+    //}
 #elif defined(_WIN32)
     //TODO: Implement
 #endif
